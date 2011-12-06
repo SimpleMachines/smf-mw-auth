@@ -6,6 +6,19 @@ Author: SleePy (sleepy at simplemachines dot org)
 Original Author: Ryan Wagoner (rswagoner at gmail dot com)
 Version: 1.13
 
+Copyright
+=============================
+Copyright © 2011 Simple Machines. All rights reserved.
+
+ Developed by: Simple Machines Forum Project
+ Simple Machines
+ http://www.simplemachines.org
+
+ Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+	[x] Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimers.
+	[x] Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimers in the documentation and/or other materials provided with the distribution.
+	[x] Neither the names of Simple Machines Forum, Simple Machines, nor the names of its contributors may be used to endorse or promote products derived from this Software without specific prior written permission.
+
 Place this file in your wiki/extenstions folder. If you
 encouter an issue be sure to read the known issues below.
 
