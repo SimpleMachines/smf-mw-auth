@@ -107,7 +107,7 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 	global $wgAuth, $smf_settings, $modSettings, $smf_member_id, $user_settings, $ID_MEMBER;
 
 	// As to why we need to do this makes no sense really.
-	// Thanks to Fustrate of SimpleMachines.org for the fix.
+	// Thanks to Norv of SimpleMachines.org for the fix.
 	$ID_MEMBER = 0;
 	$user = $initial_user_data;
 
