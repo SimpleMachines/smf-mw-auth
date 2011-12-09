@@ -271,7 +271,7 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 	}
 
 	// Go ahead and log 'em in
-	$user->setupSession();
+	wfSetupSession();
 	$user->setCookies();
 
 	return true;
