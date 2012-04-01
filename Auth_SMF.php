@@ -4,11 +4,11 @@ SMF and MediaWiki Integration
 =============================
 Author: SleePy (sleepy at simplemachines dot org)
 Original Author: Ryan Wagoner (rswagoner at gmail dot com)
-Version: 1.13
+Version: 1.14
 
 Copyright
 =============================
-Copyright © 2011 Simple Machines. All rights reserved.
+Copyright © 2012 Simple Machines. All rights reserved.
 
  Developed by: Simple Machines Forum Project
  Simple Machines
@@ -47,6 +47,7 @@ $wgSMFPath = "../forum";
 # SMF Admin -> Server Settings -> Feature Configuration section
 # NOTE: Make sure to configure the wgCookeDomain below
 #$wgSMFLogin = true;
+#$wgCookieDomain = 'domain.com';
 
 # Members in these SMF groups will not be allowed to sign into wiki.
 # This is useful for denying access to wiki and a easy anti-spam
@@ -262,7 +263,7 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 		$user->setRealName($user_settings['real_name']);
 
 		// We have some sort of group change.
-		$wgAuth->isGroupAllowed($user_settings['member_name'], &$user);
+		$wgAuth->isGroupAllowed($user_settings['member_name'], $user);
 		$wgAuth->setAdminGroup($user, $smf_member_id);
 
 		// Save!
@@ -1012,8 +1013,6 @@ class Auth_SMF extends AuthPlugin
 $wgDefaultUserOptions['smf_member_id'] = 0;
 $wgDefaultUserOptions['smf_last_update'] = 0;
 $wgHooks['UserSaveOptions'][] = 'wfProfileSMFID';
-$wgHiddenPrefs[] = 'smf_member_id';
-$wgHiddenPrefs[] = 'smf_last_update';
 
 // This prevents your SMF member ID from being lost when preferences are saved.
 function wfProfileSMFID($user, &$saveOptions)

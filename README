@@ -3,7 +3,7 @@ SMF and MediaWiki Integration
 Author: SleePy (sleepy at simplemachines dot org)
 Original Author: Ryan Wagoner (rswagoner at gmail dot com)
 Version: 1.14
-Last Modification Date: 2012.02.06
+Last Modification Date: 2012.04.01
 Last Modified By: J. Noir (jnoir at jnoir dot eu)
 
 How does it work?
@@ -17,7 +17,7 @@ therefore seamlessly bridge both environments.
 Users are created in MediaWiki the first time they access the Wiki
 when logged into the forum also. In other words, when a registered
 user from your forum is logged in, and access the wiki for the first
-time, he/she will be automaticaly and immediately registered and logged
+time, he/she will be automatically and immediately registered and logged
 into the wiki with the pre-assigned rights.
 
 This extension provides just the framework for bridging MediaWiki and
@@ -126,28 +126,6 @@ troubleshooting guidance.
 Known Issues / FAQ
 ==================
 
-Q.- Authentication does not work. I login to my forum but when I then go
-to my wiki, I am not identified. If I click the "Login/Register" link I
-am taken to the forum's login page, but my session is still active.
-
-A.- It may be that some global variabled such as $user don't have any 
-data set up at the point when you access your wiki, and in the case of 
-$user, then $smf_member_id is never set so the authentication fails down 
-the line. Edit Auth_SMF.php and change the line 176, from
-
-$smf_member_id = $user->getOption('smf_member_id');
-
-to 
-
-$smf_member_id =  $user_settings['id_member'];
-
-(Huge kudos to andre nickatina for identifying this)
-
-Q.- Authentication does not work and I am using MediaWiki 1.18 or higher
-and PHP 5.3 or higher.
-
-A.- See http://www.simplemachines.org/community/index.php?topic=465986.0
-
 Q.- Authentication is working and permissions are being granted, however 
 when I try to edit pages, I receive a message edition was not successful 
 due to loss of session data. It recommends to log off and login again, 
@@ -160,7 +138,7 @@ then it should be configured as $wgCookieDomain = 'myforum.com'; )
 Q.- I cannot login with the Administrator account created during MediaWiki's 
 installation
 
-A.- This is the expected behaviour. The account created at installation time
+A.- This is the expected behavior. The account created at installation time
 is part of MediaWiki, not of your forum. This extension bridges SMF to
 MediaWiki, but not the other way round (in other words, SMF is the principal
 and MediaWiki is a student ;-)
