@@ -161,3 +161,19 @@ A.- See http://www.simplemachines.org/community/index.php?topic=261880.0
 Q.- How can I "bridge" the favicon from my forum ?
 
 A.- Edit LocalSettings.php and use $wgFavicon = "/path/to/your/icon.ico";
+
+Notes
+==================
+
+Feel free to fork this repository and make your desired changes.
+
+Please see the "Developer's Certificate of Origin"(https://github.com/SimpleMachines/smf-mw-auth/blob/master/DCO.txt) in the repository:
+by signing off your contributions, you acknowledge that you can and do license your submissions under the license of the project.
+
+How to contribute
+==================
+1. fork the repository. If you are not used to Github, please check out "fork a repository"(http://help.github.com/fork-a-repo).
+2. branch your repository, to commit the desired changes.
+3. sign-off your commits, to acknowledge your submission under the license of the project.
+  Note: an easy way to do so, is to define an alias for the git commit command, which includes -s switch (reference: "How to create Git aliases"(http://githacks.com/post/1168909216/how-to-create-git-aliases))
+4. send a pull request to us.
