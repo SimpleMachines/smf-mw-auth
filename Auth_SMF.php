@@ -517,7 +517,7 @@ class Auth_SMF extends AuthPlugin
 	 * @param $template UserLoginTemplate object.
 	 * @public
 	 */
-	public function modifyUITemplate(&$template)
+	public function modifyUITemplate(&$template, &$type)
 	{
 		$template->set('usedomain',   false); // We do not want a domain name.
 		$template->set('create',      false); // Remove option to create new accounts from the wiki.
@@ -553,7 +553,7 @@ class Auth_SMF extends AuthPlugin
 	* @return bool
 	* @public
 	*/
-	public function allowPropChange($prop)
+	public function allowPropChange($prop = '')
 	{
 		if ($prop == 'emailaddress')
 			return false;
@@ -707,7 +707,7 @@ class Auth_SMF extends AuthPlugin
 	 * @param $autocreate bool True if user is being autocreated on login
 	 * @public
 	 */
-	public function initUser( $user, $autocreate = false)
+	public function initUser(&$user, $autocreate = false)
 	{
 		global $smf_settings, $smf_member_id;
 
