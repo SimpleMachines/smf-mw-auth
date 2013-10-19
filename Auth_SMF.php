@@ -81,10 +81,24 @@ $wgAuth = new Auth_SMF();
 if (!defined('SMF_IN_WIKI'))
 	exit('Hacking attempt on SMF...');
 
-error_reporting(E_ALL); // Debug
+$mw_show_debug = false;
 
-if(file_exists("$wgSMFPath/Settings.php"))
+// More information if we are debugging.
+if ($$mw_show_debug)
+	error_reporting(E_ALL);
+
+if (file_exists("$wgSMFPath/Settings.php"))
+{
+	// If you are upgrading the wiki, loading SMF will break it because it defines $maintenace as well.
+	if (isset($maintenance))
+		$mediawiki_maintenance = $maintenance;
+
 	require_once("$wgSMFPath/Settings.php");
+
+	// Restore mediawiki $maintenance if needed.
+	if (isset($mediawiki_maintenance))
+		$maintenance = $mediawiki_maintenance;
+}
 else
 	die('Check to make sure $wgSMFPath is correctly set in LocalSettings.php!');
 
@@ -163,7 +177,7 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 	}
 
 	// Log out guests or members with invalid cookie passwords.
-	if($ID_MEMBER == 0)
+	if ($ID_MEMBER == 0)
 	{
 		// A bug seems to exist in isLoggedIn when it calls getId.
 		// getId appears to try to load user data, which may not exist at this point.
@@ -177,7 +191,7 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 		$smf_member_id = $user->getOption('smf_member_id');
 
 	// If the username has an underscore or space accept the first registered user.
-	if(empty($smf_member_id) && (strpos($user_settings['member_name'], ' ') !== false || strpos($user_settings['member_name'], '_') !== false))
+	if (empty($smf_member_id) && (strpos($user_settings['member_name'], ' ') !== false || strpos($user_settings['member_name'], '_') !== false))
 	{
 		$request = $wgAuth->query("
 			SELECT id_member 
@@ -190,7 +204,7 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 		mysql_free_result($request);
 
 		// Sorry your name was taken already!
-		if($id != $ID_MEMBER)
+		if ($id != $ID_MEMBER)
 		{
 			if($user->isLoggedIn())
 				$user->logout();
@@ -201,7 +215,7 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 	// Lastly check to see if they are not banned and allowed to login
 	if (!$wgAuth->isNotBanned($ID_MEMBER) || !$wgAuth->canLogin())
 	{
-		if($user->isLoggedIn())
+		if ($user->isLoggedIn())
 			$user->logout();
 		return true;
 	}
@@ -213,7 +227,7 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 	$username = strtr($username, array('[' => '=', ']' => '"'));
 
 	// Only poll the database if no session or username mismatch.
-	if(!($user->isLoggedIn() && $user->getName() == $username))
+	if (!($user->isLoggedIn() && $user->getName() == $username))
 	{
        	$user->setId($user->idFromName($username));
 
@@ -381,7 +395,7 @@ function smf_sessionSetup()
 	session_start();
 
 	// Load up the SMF session and set the redirect URL.
-	if(isset($_COOKIE[$smf_settings['cookiename']]))
+	if (isset($_COOKIE[$smf_settings['cookiename']]))
 		session_decode($_COOKIE[$smf_settings['cookiename']]);
 	// No exisiting session, create one
 	else
@@ -418,7 +432,7 @@ class Auth_SMF extends AuthPlugin
 		global $wgSMFLogin, $wgHooks, $wgDefaultUserOptions;
 
 		// Integrate with SMF login / logout?
-		if(isset($wgSMFLogin) && $wgSMFLogin)
+		if (isset($wgSMFLogin) && $wgSMFLogin)
 		{
 			$wgHooks['AutoAuthenticate'][] = 'AutoAuthenticateSMF';
 			$wgHooks['UserLoadFromSession'][] = 'AutoAuthenticateSMF';
@@ -542,7 +556,7 @@ class Auth_SMF extends AuthPlugin
 	 * @return bool
 	 * @public
 	 */
-	public function validDomain( $domain)
+	public function validDomain($domain)
 	{
 		return true;
 	}
@@ -572,7 +586,7 @@ class Auth_SMF extends AuthPlugin
 	 * @param User $user
 	 * @public
 	 */
-	public function updateUser( &$user)
+	public function updateUser(&$user)
 	{
 		global $smf_settings, $smf_member_id;
 
@@ -587,7 +601,7 @@ class Auth_SMF extends AuthPlugin
 			WHERE id_member = '{$smf_member_id}'
 			LIMIT 1");
 
-		while($row = mysql_fetch_assoc($request))
+		while ($row = mysql_fetch_assoc($request))
 		{
 			$user->setRealName($row['real_name']);
 			$user->setEmail($row['email_address']);
@@ -634,7 +648,7 @@ class Auth_SMF extends AuthPlugin
 		// Only allow password change if not using auto login.
 		// Otherwise we would need a bunch of code to rewrite
 		// the SMF login cookie with the new password.
-		if(isset($wgSMFLogin) && $wgSMFLogin)
+		if (isset($wgSMFLogin) && $wgSMFLogin)
 			return false;
 
 		return true;
@@ -727,7 +741,7 @@ class Auth_SMF extends AuthPlugin
 			WHERE id_member = '{$smf_member_id}'
 			LIMIT 1");
 
-		while($row = mysql_fetch_assoc($request))
+		while ($row = mysql_fetch_assoc($request))
 		{
 			$user->setRealName($row[real_name]);
 			$user->setEmail($row[email_address]);
