@@ -81,10 +81,10 @@ $wgAuth = new Auth_SMF();
 if (!defined('SMF_IN_WIKI'))
 	exit('Hacking attempt on SMF...');
 
-$mw_show_debug = false;
+$wgSMFDebug = false;
 
 // More information if we are debugging.
-if ($$mw_show_debug)
+if ($wgSMFDebug)
 	error_reporting(E_ALL);
 
 if (file_exists("$wgSMFPath/Settings.php"))
@@ -96,6 +96,7 @@ if (file_exists("$wgSMFPath/Settings.php"))
 	require_once("$wgSMFPath/Settings.php");
 
 	// Restore mediawiki $maintenance if needed.
+	$smf_maintenance = $maintenance;
 	if (isset($mediawiki_maintenance))
 		$maintenance = $mediawiki_maintenance;
 }
