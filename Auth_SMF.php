@@ -286,9 +286,12 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 		$user->saveSettings();
 	}
 
-	// Go ahead and log 'em in
-	wfSetupSession();
-	$user->setCookies();
+	// Go ahead and log 'em in, but only if the session isn't already going.
+	if (session_id() === '')
+	{
+		wfSetupSession();
+		$user->setCookies();
+	}
 
 	return true;
 }
