@@ -988,6 +988,9 @@ class Auth_SMF extends AuthPlugin
 		// Check if we were able to select the database.
 		if (!$db_selected)
 			$this->mysqlerror("SMF was unable to connect to the database.<br />\n");
+
+		// As of now, we don't suport anything other than UTF8 with SMF.
+		mysql_query('SET NAMES UTF8', $this->conn);
 	}
 
 	/**
@@ -1038,7 +1041,7 @@ function wfProfileSMFID($user, &$saveOptions)
 	global $ID_MEMBER;
 
 	// Preserve our member id.
-	if (empty($saveOptions['smf_member_id']))
+	if (empty($saveOptions['smf_member_id']) && !empty($user->mOptionOverrides['smf_member_id']))
 		$saveOptions['smf_member_id'] = $user->mOptionOverrides['smf_member_id'];
 
 	// Still empty, maybe we can save the day.
