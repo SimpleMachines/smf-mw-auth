@@ -81,6 +81,7 @@ $wgAuth = new Auth_SMF();
 if (!defined('SMF_IN_WIKI'))
 	exit('Hacking attempt on SMF...');
 
+// Only usefull for debugging purposes.
 $wgSMFDebug = false;
 
 // More information if we are debugging.
@@ -110,6 +111,7 @@ $smf_settings['db_name'] = $db_name;
 $smf_settings['db_user'] = $db_user;
 $smf_settings['db_passwd'] = $db_passwd;
 $smf_settings['db_prefix'] = $db_prefix;
+$smf_settings['debug_wiki'] = $wgSMFDebug;
 
 /**
  * Check the SMF cookie and automatically log the user into the wiki.
@@ -139,7 +141,7 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 	// Only load this stuff if the user isn't a guest.
 	if ($ID_MEMBER != 0)
 	{
-		if (empty($_SESSION['user_settings']) || empty($_SESSION['user_settings_time']) || time() > $_SESSION['user_settings_time'] + 900)
+		if (!empty($smf_settings['debug_wiki']) || (empty($_SESSION['user_settings']) || empty($_SESSION['user_settings_time']) || time() > $_SESSION['user_settings_time'] + 900))
 		{
 			$request = $wgAuth->query("		
 				SELECT id_member, member_name, email_address, real_name,
@@ -221,11 +223,14 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 		return true;
 	}
 
-	// Convert to wiki standards
+	// Mediawiki username rules: http://www.mediawiki.org/wiki/Thread:Project:Support_desk/Username_rules
+	// MediaWiki Username are always capatlized, considers spaces and _ the same
+	// MediaWiki disallows #<>[]|{}, non-printable characters 0 through 31, and 127
+	// SMF disallows <>&"'=\
+	// Because of SMF and MediaWiki naming differences, we replace and adjust the naming to be compatible with MediaWiki, while allowing a reverse engineering to so speak.
 	$username = ucfirst(str_replace('_', '\'', $user_settings['member_name']));
-	// Wiki doesn't allow [] and SMF does, SMF doesn't allow =" and Wiki does.
-	// We do it like this so we can reverse it to find the original name if needed.
-	$username = strtr($username, array('[' => '=', ']' => '"'));
+	$username = strtr($username, array('[' => '=', ']' => '"', '|' => '&', '#' => '\\'));
+	$username = strtr($username, array('{' => '==', '}' => '""'));
 
 	// Only poll the database if no session or username mismatch.
 	if (!($user->isLoggedIn() && $user->getName() == $username))
@@ -470,7 +475,7 @@ class Auth_SMF extends AuthPlugin
 		global $smf_settings, $smf_member_id;
 
 		// Check if we did this already recently.
-		if (isset($_SESSION['smf_uE_t'], $_SESSION['smf_uE']) && time() < ($_SESSION['smf_uE'] + 300))
+		if (empty($smf_settings['debug_wiki']) && isset($_SESSION['smf_uE_t'], $_SESSION['smf_uE']) && time() < ($_SESSION['smf_uE'] + 300))
 			return $_SESSION['smf_uE'];
 		$_SESSION['smf_uE'] = time();
 
@@ -805,7 +810,7 @@ class Auth_SMF extends AuthPlugin
 			SELECT member_name 
 			FROM $smf_settings[db_prefix]members
 			WHERE member_name = '{$username}' 
-				OR member_name = '" . strtr($username, array(' ' => '_', '[' => '=', ']' => '"')) . "'
+				OR member_name = '" . strtr(strtr($username, array(' ' => '_', '[' => '=', ']' => '"', '|' => '&', '#' => '\\')), array('{' => '==', '}' => '""')) . "'
 			ORDER BY date_registered ASC
 			LIMIT 1");
 
@@ -828,7 +833,7 @@ class Auth_SMF extends AuthPlugin
 		global $smf_settings, $smf_member_id;
 
 		// Perhaps we have it cached in the session.
-		if (isset($_SESSION['smf_iNB_t'], $_SESSION['smf_iNB']) && time() < ($_SESSION['smf_iNB_t'] + 900))
+		if (empty($smf_settings['debug_wiki']) && isset($_SESSION['smf_iNB_t'], $_SESSION['smf_iNB']) && time() < ($_SESSION['smf_iNB_t'] + 900))
 			return $_SESSION['smf_iNB'] ? true : false;
 
 		$request = $this->query("
@@ -857,7 +862,7 @@ class Auth_SMF extends AuthPlugin
 	{
 		global $wgSMFDenyGroupID, $user_settings;
 
-		if (isset($_SESSION['smf_cL_t'], $_SESSION['smf_cL']) && time() < ($_SESSION['smf_cL_t'] + 900))
+		if (empty($smf_settings['debug_wiki']) && isset($_SESSION['smf_cL_t'], $_SESSION['smf_cL']) && time() < ($_SESSION['smf_cL_t'] + 900))
 			return $_SESSION['smf_cL'] ? true : false;
 
 		$_SESSION['smf_iNB_t'] = time();
@@ -889,7 +894,7 @@ class Auth_SMF extends AuthPlugin
 		$already_done = true;
 
 		// Check if we did this already recently.
-		if (isset($_SESSION['smf_sAG']) && time() < ($_SESSION['smf_sAG'] + 900))
+		if (empty($smf_settings['debug_wiki']) && isset($_SESSION['smf_sAG']) && time() < ($_SESSION['smf_sAG'] + 900))
 			return;
 		$_SESSION['smf_sAG'] = time();
 
@@ -925,7 +930,7 @@ class Auth_SMF extends AuthPlugin
 		global $wgSMFGroupID, $wgSMFDenyGroupID, $wgSMFSpecialGroups, $user_settings;
 
 		// Check if we did this already recently.
-		if (isset($_SESSION['smf_iSA_t'], $_SESSION['smf_iSA']) && time() < ($_SESSION['smf_iSA_t'] + 900))
+		if (empty($smf_settings['debug_wiki']) && isset($_SESSION['smf_iSA_t'], $_SESSION['smf_iSA']) && time() < ($_SESSION['smf_iSA_t'] + 900))
 			return $_SESSION['smf_iSA'];
 		$_SESSION['smf_iSA_t'] = time();
 
