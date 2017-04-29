@@ -112,6 +112,8 @@ $smf_settings['db_user'] = $db_user;
 $smf_settings['db_passwd'] = $db_passwd;
 $smf_settings['db_prefix'] = $db_prefix;
 $smf_settings['debug_wiki'] = $wgSMFDebug;
+$smf_settings['sourcedir'] = $sourcedir;
+$smf_settings['db_type'] = $db_type;
 
 /**
  * Check the SMF cookie and automatically log the user into the wiki.
@@ -977,25 +979,25 @@ class Auth_SMF extends AuthPlugin
 	 */
 	public function connect()
 	{
-		global $smf_settings;
+		global $smf_settings, $smcFunc;
 
-		// Connect to database.
-		$this->conn = @mysql_pconnect($smf_settings['db_server'], $smf_settings['db_user'],
-	 		$smf_settings['db_passwd'], true);
+		$db_type = !empty($smf_settings['db_type']) && file_exists($smf_settings['sourcedir'] . '/Subs-Db-' . $smf_settings['db_type'] . '.php')  ? $smf_settings['db_type'] : 'mysql';
 
-		// Check if we are connected to the database.
-		if (!$this->conn)
-			$this->mysqlerror("SMF was unable to connect to the database.<br />\n");
+		if (!defined('SMF'))
+			define('SMF', 'WIKI');
+		if (!isset($smcFunc))
+			$smcFunc = array();
 
-		// Select database: this assumes the wiki and smf are in the same database.
-		$db_selected = @mysql_select_db($smf_settings['db_name'], $this->conn);
+		require_once($smf_settings['sourcedir'] . '/Subs-Db-' . $smf_settings['db_type'] . '.php');
 
-		// Check if we were able to select the database.
-		if (!$db_selected)
-			$this->mysqlerror("SMF was unable to connect to the database.<br />\n");
+		$this->conn = smf_db_initiate($smf_settings['db_server'], $smf_settings['db_name'], $smf_settings['db_user'], $smf_settings['db_passwd'], $smf_settings['db_prefix']);
 
 		// As of now, we don't suport anything other than UTF8 with SMF.
-		mysql_query('SET NAMES UTF8', $this->conn);
+		$smcFunc['db_query']('set_character_set', '
+			SET NAMES UTF8',
+			array(
+			)
+		);
 	}
 
 	/**
@@ -1006,7 +1008,7 @@ class Auth_SMF extends AuthPlugin
 	 */
 	public function query($query)
 	{
-		$request = mysql_query($query, $this->conn);
+		$request = $smcFunc['db_query']('', $query, array(), $this->conn);
 
 		if(!$request)
 			$this->mysqlerror('Unable to view external table.');
@@ -1058,4 +1060,26 @@ function wfProfileSMFID($user, &$saveOptions)
 	// Auth will restore it on the next page load (ie right after the page save).
 
 	return true;
+}
+
+/**
+ * Because we don't fully load SMF, this doesn't exist, so handle this should an error occur..
+ *
+ * @param string $query
+ * @return resource
+ */
+if (!function_exists('display_db_error'))
+{
+	function display_db_error()
+	{
+		global $wgSMFDebug;
+
+		echo $message . "<br /><br />\n\n";
+
+		// Only if we are debugging.
+		if ($wgSMFDebug)
+			echo 'mySQL error number: ', mysql_errno(), "<br />\n", 'mySQL error message: ', mysql_error(), "<br /><br />\n\n";
+
+		exit;	
+	}
 }
