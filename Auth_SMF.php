@@ -1008,6 +1008,8 @@ class Auth_SMF extends AuthPlugin
 	 */
 	public function query($query)
 	{
+		global $smcFunc;
+
 		$request = $smcFunc['db_query']('', $query, array(), $this->conn);
 
 		if(!$request)
