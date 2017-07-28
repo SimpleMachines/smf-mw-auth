@@ -438,7 +438,7 @@ class Auth_SMF extends AuthPlugin
 	/**
 	 * Class constructor that will initialize the hooks and database connection.
 	 */
-	function Auth_SMF()
+	function __construct()
 	{
 		global $wgSMFLogin, $wgHooks, $wgDefaultUserOptions;
 
