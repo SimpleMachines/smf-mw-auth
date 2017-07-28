@@ -145,7 +145,7 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 	{
 		if (!empty($smf_settings['debug_wiki']) || (empty($_SESSION['user_settings']) || empty($_SESSION['user_settings_time']) || time() > $_SESSION['user_settings_time'] + 900))
 		{
-			$request = $wgAuth->query("		
+			$request = $wgAuth->db_query("		
 				SELECT id_member, member_name, email_address, real_name,
 					is_activated, passwd, password_salt,
 					id_group, id_post_group, additional_groups
@@ -154,10 +154,10 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 					AND is_activated = 1
 				LIMIT 1");
 
-			$user_settings = mysql_fetch_assoc($request);
+			$user_settings = $wgAuth->db_fetch_assoc($request);
 
 			$_SESSION['user_settings'] = serialize($user_settings);
-			mysql_free_result($request);
+			$wgAuth->db_free_result($request);
 		}
 		else
 			$user_settings = unserialize($_SESSION['user_settings']);
@@ -198,15 +198,15 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 	// If the username has an underscore or space accept the first registered user.
 	if (empty($smf_member_id) && (strpos($user_settings['member_name'], ' ') !== false || strpos($user_settings['member_name'], '_') !== false))
 	{
-		$request = $wgAuth->query("
+		$request = $wgAuth->db_query("
 			SELECT id_member 
 			FROM $smf_settings[db_prefix]members
 			WHERE member_name = '" . $user_settings['member_name'] . "'
 			ORDER BY date_registered ASC
 			LIMIT 1");
 
-		list($id) = mysql_fetch_row($request);
-		mysql_free_result($request);
+		list($id) = $wgAuth->db_fetch_row($request);
+		$wgAuth->db_free_result($request);
 
 		// Sorry your name was taken already!
 		if ($id != $ID_MEMBER)
@@ -482,14 +482,14 @@ class Auth_SMF extends AuthPlugin
 		$_SESSION['smf_uE'] = time();
 
 		$username = $this->fixUsername($username);
-		$request = $this->query("
+		$request = $this->db_query("
 			SELECT member_name
 			FROM $smf_settings[db_prefix]members
 			WHERE id_member = '{$smf_member_id}'
 			LIMIT 1");
 
-		list ($user) = mysql_fetch_row($request);
-		mysql_free_result($request);
+		list ($user) = $this->db_fetch_row($request);
+		$this->db_free_result($request);
 
 		// Play it safe and double check the match.
 		$_SESSION['smf_uE'] = strtolower($user) == strtolower($username) ? true : false;
@@ -517,15 +517,15 @@ class Auth_SMF extends AuthPlugin
 			return false;
 	
 		$username = $this->fixUsername($username);
-		$request = $this->query("
+		$request = $this->db_query("
 			SELECT member_name, passwd
 			FROM $smf_settings[db_prefix]members
 			WHERE id_member = '{$smf_member_id}'
 				AND is_activated = 1
 			LIMIT 1");
 
-		list($member_name, $passwd) = mysql_fetch_row($request);
-		mysql_free_result($request);
+		list($member_name, $passwd) = $this->db_fetch_row($request);
+		$this->db_free_result($request);
 
 		$pw = sha1(strtolower($username) . $password);
 
@@ -606,13 +606,13 @@ class Auth_SMF extends AuthPlugin
 			return false;
 
 		$username = $this->fixUsername($user->getName());
-		$request = $this->query("
+		$request = $this->db_query("
 			SELECT email_address, real_name
 			FROM $smf_settings[db_prefix]members
 			WHERE id_member = '{$smf_member_id}'
 			LIMIT 1");
 
-		while ($row = mysql_fetch_assoc($request))
+		while ($row = $this->db_fetch_assoc($request))
 		{
 			$user->setRealName($row['real_name']);
 			$user->setEmail($row['email_address']);
@@ -622,7 +622,7 @@ class Auth_SMF extends AuthPlugin
 			$user->setOption('smf_last_update', time());		
 			$user->saveSettings();
 		}
-		mysql_free_result($request);
+		$this->db_free_result($request);
 	
 		return true;
 	}
@@ -746,13 +746,13 @@ class Auth_SMF extends AuthPlugin
 			return true;
 
 		$username = $this->fixUsername($user->getName());
-		$request = $this->query("
+		$request = $this->db_query("
 			SELECT id_member, email_address, real_name
 			FROM $smf_settings[db_prefix]members
 			WHERE id_member = '{$smf_member_id}'
 			LIMIT 1");
 
-		while ($row = mysql_fetch_assoc($request))
+		while ($row = $this->db_fetch_assoc($request))
 		{
 			$user->setRealName($row[real_name]);
 			$user->setEmail($row[email_address]);
@@ -765,7 +765,7 @@ class Auth_SMF extends AuthPlugin
 			$user->setOption('smf_last_update', time());
 			$user->saveSettings();
 		}	
-		mysql_free_result($request);
+		$this->db_free_result($request);
 
 		return true;
 	}
@@ -808,7 +808,7 @@ class Auth_SMF extends AuthPlugin
 			return $fixed_name;
 
 		// Look for either case sorted by date.
-		$request = $this->query("
+		$request = $this->db_query("
 			SELECT member_name 
 			FROM $smf_settings[db_prefix]members
 			WHERE member_name = '{$username}' 
@@ -816,8 +816,8 @@ class Auth_SMF extends AuthPlugin
 			ORDER BY date_registered ASC
 			LIMIT 1");
 
-		list($user) = mysql_fetch_row($request);
-		mysql_free_result($request);
+		list($user) = $this->db_fetch_row($request);
+		$this->db_free_result($request);
 
 		// No result play it safe and return the original.
 		$fixed_name = $user;
@@ -846,8 +846,8 @@ class Auth_SMF extends AuthPlugin
 			WHERE i.id_member = '{$id_member}'
 				AND (g.cannot_post = 1 OR g.cannot_login = 1)");
 
-		$banned = mysql_num_rows($request);
-		mysql_free_result($request);
+		$banned = $this->db_num_rows($request);
+		$this->db_free_result($request);
 
 		$_SESSION['smf_iNB_t'] = time();
 		$_SESSION['smf_iNB'] = $banned ? false : true;
@@ -1006,25 +1006,77 @@ class Auth_SMF extends AuthPlugin
 	 * @param string $query
 	 * @return resource
 	 */
-	public function query($query)
+	public function db_query($query)
 	{
 		global $smcFunc;
 
 		$request = $smcFunc['db_query']('', $query, array(), $this->conn);
 
 		if(!$request)
-			$this->mysqlerror('Unable to view external table.');
+			$this->db_error('Unable to view external table.');
 
 		return $request;
 	}
 
 	/**
-	 * Display an error when a mysql error is found.
+	 * Fetch the query with assoc.
+	 *
+	 * @param resource $request
+	 * @return resource
+	 */
+	public function db_fetch_assoc($request)
+	{
+		global $smcFunc;
+
+		return $smcFunc['db_fetch_assoc']($request);
+	}
+
+	/**
+	 * Fetch the query.
+	 *
+	 * @param resource $request
+	 * @return resource
+	 */
+	public function db_fetch_row($request)
+	{
+		global $smcFunc;
+
+		return $smcFunc['db_fetch_row']($request);
+	}
+
+	/**
+	 * Get the number or rows for the query.
+	 *
+	 * @param resource $request
+	 * @return resource
+	 */
+	public function db_num_rows($request)
+	{
+		global $smcFunc;
+
+		return $smcFunc['db_num_rows']($request);
+	}
+
+	/**
+	 * Free the query.
+	 *
+	 * @param resource $request
+	 * @return resource
+	 */
+	public function db_free_result($request)
+	{
+		global $smcFunc;
+
+		return $smcFunc['db_free_result']($request);
+	}
+
+	/**
+	 * Display an error when a error is found.
 	 *
 	 * @param string $message
 	 * @access public
 	 */
-	public function mysqlerror($message)
+	public function db_error($message)
 	{
 		global $wgSMFDebug;
 
@@ -1032,7 +1084,14 @@ class Auth_SMF extends AuthPlugin
 
 		// Only if we are debugging.
 		if ($wgSMFDebug)
-			echo 'mySQL error number: ', mysql_errno(), "<br />\n", 'mySQL error message: ', mysql_error(), "<br /><br />\n\n";
+		{
+			$db_type = !empty($smf_settings['db_type']) && file_exists($smf_settings['sourcedir'] . '/Subs-Db-' . $smf_settings['db_type'] . '.php')  ? $smf_settings['db_type'] : 'mysql';
+
+			if ($db_type == 'postgresql')
+				echo 'PostgreSQL error: ', pg_last_error(), "<br />\n";
+			else
+				echo 'MySQL error number: ', mysql_errno(), "<br />\n", 'MySQL error message: ', mysql_error(), "<br /><br />\n\n";
+		}
 
 		exit;
 	}
@@ -1080,7 +1139,14 @@ if (!function_exists('display_db_error'))
 
 		// Only if we are debugging.
 		if ($wgSMFDebug)
-			echo 'mySQL error number: ', mysql_errno(), "<br />\n", 'mySQL error message: ', mysql_error(), "<br /><br />\n\n";
+		{
+			$db_type = !empty($smf_settings['db_type']) && file_exists($smf_settings['sourcedir'] . '/Subs-Db-' . $smf_settings['db_type'] . '.php')  ? $smf_settings['db_type'] : 'mysql';
+
+			if ($db_type == 'postgresql')
+				echo 'PostgreSQL error: ', pg_last_error(), "<br />\n";
+			else
+				echo 'MySQL error number: ', mysql_errno(), "<br />\n", 'MySQL error message: ', mysql_error(), "<br /><br />\n\n";
+		}
 
 		exit;	
 	}
