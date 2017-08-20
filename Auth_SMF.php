@@ -838,7 +838,7 @@ class Auth_SMF extends AuthPlugin
 		if (empty($smf_settings['debug_wiki']) && isset($_SESSION['smf_iNB_t'], $_SESSION['smf_iNB']) && time() < ($_SESSION['smf_iNB_t'] + 900))
 			return $_SESSION['smf_iNB'] ? true : false;
 
-		$request = $this->query("
+		$request = $this->db_query("
 			SELECT id_ban
 			FROM $smf_settings[db_prefix]ban_items AS i
 			LEFT JOIN $smf_settings[db_prefix]ban_groups AS g
