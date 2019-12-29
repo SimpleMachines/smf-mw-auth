@@ -168,7 +168,7 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 		if (!empty($user_settings))
 		{
 			// SHA-1 passwords should be 40 characters long.
-			if (strlen($password) == 40 && !empty($smf_settings['cookie_no_auth_secret']) && empty($smf_settings['auth_secret']))
+			if (strlen($password) == 40 && empty($smf_settings['cookie_no_auth_secret']) && !empty($smf_settings['auth_secret']))
 				$check = hash_hmac('sha1', sha1($user_settings['passwd'] . $user_settings['password_salt']), $smf_settings['auth_secret']) == $password;
 			elseif (strlen($password) == 40)
 				$check = sha1($user_settings['passwd'] . $user_settings['password_salt']) == $password;
