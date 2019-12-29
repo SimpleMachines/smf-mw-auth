@@ -2,9 +2,9 @@ SMF and MediaWiki Integration
 =============================
 Author: SleePy (sleepy at simplemachines dot org)
 Original Author: Ryan Wagoner (rswagoner at gmail dot com)
-Version: 1.14
-Last Modification Date: 2012.04.01
-Last Modified By: J. Noir (jnoir at jnoir dot eu)
+Version: 1.15
+Last Modification Date: 2019.12.29
+Last Modified By: SleePy (sleepy at simplemachines dot org)
 
 How does it work?
 =================
@@ -53,7 +53,7 @@ folder of your MediaWiki installation.
 
 3.- Edit LocalSettings.php (but make sure not use Notepad, TextEdit or
 other text editor that adds byte order marks to files, or you will
-break your wiki). See http://en.wikipedia.org/wiki/Byte_order_mark
+break your wiki). See https://en.wikipedia.org/wiki/Byte_order_mark
 for more information about byte order marks.
 
 4.- If you have setup your wiki to require users to be registered 
@@ -136,7 +136,7 @@ due to loss of session data. It recommends to log off and login again,
 but that does not help.
 
 A.- Make sure that $wgCookieDomain is set to the name of your domain
-without prefixes (e.g.: if your forum is located at http://www.myforum.com
+without prefixes (e.g.: if your forum is located at https://www.myforum.com
 then it should be configured as $wgCookieDomain = 'myforum.com'; )
 
 Q.- I cannot login with the Administrator account created during MediaWiki's 
@@ -152,11 +152,11 @@ to assign some extra rights for some users (e.g., for forum moderators).
 
 A.- That's part of the 'bureaucrat' role. You will need to assign your
 administrator to that role first. For some possible techniques, see 
-http://www.mediawiki.org/wiki/Manual:Setting_user_rights_in_MediaWiki
+https://www.mediawiki.org/wiki/Manual:Setting_user_rights_in_MediaWiki
 
 Q.- How can I link my wiki from my forum ?
 
-A.- See http://www.simplemachines.org/community/index.php?topic=261880.0
+A.- See https://www.simplemachines.org/community/index.php?topic=261880.0
 
 Q.- How can I "bridge" the favicon from my forum ?
 
@@ -172,8 +172,8 @@ by signing off your contributions, you acknowledge that you can and do license y
 
 How to contribute
 ==================
-1. fork the repository. If you are not used to Github, please check out "fork a repository"(http://help.github.com/fork-a-repo).
+1. fork the repository. If you are not used to Github, please check out "fork a repository"(https://help.github.com/fork-a-repo).
 2. branch your repository, to commit the desired changes.
 3. sign-off your commits, to acknowledge your submission under the license of the project.
-  Note: an easy way to do so, is to define an alias for the git commit command, which includes -s switch (reference: "How to create Git aliases"(http://githacks.com/post/1168909216/how-to-create-git-aliases))
+  Note: an easy way to do so, is to define an alias for the git commit command, which includes -s switch (reference: "How to create Git aliases"(https://githacks.com/post/1168909216/how-to-create-git-aliases))
 4. send a pull request to us.

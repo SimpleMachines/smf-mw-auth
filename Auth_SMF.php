@@ -4,15 +4,15 @@ SMF and MediaWiki Integration
 =============================
 Author: SleePy (sleepy at simplemachines dot org)
 Original Author: Ryan Wagoner (rswagoner at gmail dot com)
-Version: 1.14
+Version: 1.15
 
 Copyright
 =============================
-Copyright © 2012 Simple Machines. All rights reserved.
+Copyright © 2019 Simple Machines. All rights reserved.
 
  Developed by: Simple Machines Forum Project
  Simple Machines
- http://www.simplemachines.org
+ https://www.simplemachines.org
 
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 	[x] Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimers.
@@ -114,6 +114,8 @@ $smf_settings['db_prefix'] = $db_prefix;
 $smf_settings['debug_wiki'] = $wgSMFDebug;
 $smf_settings['sourcedir'] = $sourcedir;
 $smf_settings['db_type'] = $db_type;
+$smf_settings['auth_secret'] = $auth_secret;
+$smf_settings['cookie_no_auth_secret'] = isset($cookie_no_auth_secret) ? $cookie_no_auth_secret : false;
 
 /**
  * Check the SMF cookie and automatically log the user into the wiki.
@@ -166,7 +168,9 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 		if (!empty($user_settings))
 		{
 			// SHA-1 passwords should be 40 characters long.
-			if (strlen($password) == 40)
+			if (strlen($password) == 40 && !empty($smf_settings['cookie_no_auth_secret']) && empty($smf_settings['auth_secret']))
+				$check = hash_hmac('sha1', sha1($user_settings['passwd'] . $user_settings['password_salt']), $smf_settings['auth_secret']) == $password;
+			elseif (strlen($password) == 40)
 				$check = sha1($user_settings['passwd'] . $user_settings['password_salt']) == $password;
 			else
 				$check = false;
@@ -225,7 +229,7 @@ function AutoAuthenticateSMF ($initial_user_data, &$user)
 		return true;
 	}
 
-	// Mediawiki username rules: http://www.mediawiki.org/wiki/Thread:Project:Support_desk/Username_rules
+	// Mediawiki username rules: https://www.mediawiki.org/wiki/Thread:Project:Support_desk/Username_rules
 	// MediaWiki Username are always capatlized, considers spaces and _ the same
 	// MediaWiki disallows #<>[]|{}, non-printable characters 0 through 31, and 127
 	// SMF disallows <>&"'=\

@@ -1,8 +1,8 @@
-Copyright © 2011 Simple Machines. All rights reserved.
+Copyright © 2019 Simple Machines. All rights reserved.
 
  Developed by: Simple Machines Forum Project
  Simple Machines
- http://www.simplemachines.org
+ https://www.simplemachines.org
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 	[x] Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimers.
