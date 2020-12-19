@@ -1,0 +1,63 @@
+{
+  "name": "ForumSsoProvider",
+  "version": "2.0.0",
+  "author": [
+  	"Simple Machines",
+  	"SleePy",
+    "Vekseid"
+  ],
+  "url": "https://github.com/SimpleMachines/smf-mw-auth",
+  "description": "Users a Forum Software to provide MediaWiki single-sign on.",
+  "license-name": "BSD",
+  "type": "other",
+  "requires": {
+    "MediaWiki": ">= 1.35.0"
+  },
+  "config": {
+    "_prefix": "wgFSP",
+    "Path": "",
+    "NameStyle": "smf",
+    "Software": "elk1.1",
+    "SuperGroups": [],
+    "InterfaceGroups": [1],
+    "AdminGroups": [1],
+    "AllowGroups": [],
+    "DenyGroups:": []
+  },
+  "SessionProviders": {
+    "ForumSsoProvider": {
+      "class": "ForumSsoProvider",
+      "args": []
+    }
+  },
+  "AuthManagerAutoConfig": {
+  	"primaryauth": {
+		"ForumAuthManager": {
+		  "class": "ForumAuthManager",
+		  "args": []
+		}
+	}
+  },
+  "DefaultUserOptions": {
+    "forum_last_update": 0
+  },
+  "Hooks": {
+    "SpecialPageBeforeExecute": [
+      "ForumSsoProvider::onSpecialPageBeforeExecute"
+    ]
+  },
+  "AutoloadClasses": {
+    "ForumSsoProvider": "ForumSsoProvider.php",
+    "ForumAuthManager": "ForumAuthManager.php",
+    "ForumDatabaseProvider": "DatabaseProvider/base.php",
+    "ForumDatabaseProviderMySQLi": "DatabaseProvider/MySQLi.php",
+    "ForumDatabaseProviderPDO": "DatabaseProvider/PDO.php",
+    "ForumSoftwareProvider": "ForumProvider/base.php",
+    "ForumSoftwareProvidersmf20": "ForumProvider/smf2.0.php",
+    "ForumSoftwareProvidersmf21": "ForumProvider/smf2.1.php",
+    "ForumSoftwareProviderelk10": "ForumProvider/elk1.0.php",
+    "ForumSoftwareProviderelk11": "ForumProvider/elk1.1.php"
+
+  },
+  "manifest_version": 1
+}
