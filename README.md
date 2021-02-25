@@ -6,6 +6,7 @@ To use, the contents of the ForumSsoProvider directory need to be placed into ex
     wfLoadExtension('ForumSsoProvider');
 
 # Required LocalSettings
+All settings should be defined prior to calling `wfLoadExtension('ForumSsoProvider');` in your LocalSettings.php
 ### Path to Forum Software
 
     $wgSMFPath = '/path/to/smf/root/';
@@ -106,21 +107,8 @@ This bloats pretty quickly, so you'll want to comment it out after you have reso
 ----
 Getting New SMF Forks In
 ------------------------
-If you are familiar with how your fork's authentication works, feel free to submit a pull request. 
+If you are familiar with how your fork's authentication works, feel free to submit a pull request.
 
 Issues or changes
 ------------------------
 If an issue has occurred, please open a new issue.  If you have a change, please submit a pull request.
-
-
-
-
-
-
-
-
-
-
-
-
-
