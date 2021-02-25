@@ -128,6 +128,10 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 	{
 		global $wgForumSessionProviderInstance;
 
+		// Ensure its callable.
+		if (!is_callable($wgForumSessionProviderInstance, 'doRedirect'))
+			return;
+
 		// The case of some of these isn't always consistent with what shows up in the url.
 		$special_action = strtolower($special->getName());
 
