@@ -42,7 +42,7 @@ class ForumSoftwareProviderelk10 extends ForumSoftwareProvidersmf20
 	*/
 	public function getRedirectURL(string $action, string $wiki_url, bool $do_return = false)
 	{
-		$forum_action = $this->$validRedirectActions[$action];
+		$forum_action = $this->validRedirectActions[$action];
 
 		$forum_url =
 			$this->ForumSettings['boardurl']

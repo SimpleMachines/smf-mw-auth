@@ -65,7 +65,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
         parent::__construct($params);
 
 		// We hand this off for later to be used in our static function calls.
-		$wgForumSessionProviderInstance = &$this;
+		$wgForumSessionProviderInstance = $this;
 
 		// We use MWLogger here as logger seems to get destroyed.  Sets up logging of this extension for debugging purposes.
         $this->MWlogger = \MediaWiki\Logger\LoggerFactory::getInstance('ForumSessionProvider');
@@ -129,7 +129,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 		global $wgForumSessionProviderInstance;
 
 		// Ensure its callable.
-		if (!is_callable($wgForumSessionProviderInstance, 'doRedirect'))
+		if (!is_callable(array($wgForumSessionProviderInstance, 'doRedirect')))
 			return;
 
 		// The case of some of these isn't always consistent with what shows up in the url.

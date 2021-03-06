@@ -138,13 +138,13 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	*/
 	public function getRedirectURL(string $action, string $wiki_url, bool $do_return = false)
 	{
-		$forum_action = $this->$validRedirectActions[$action];
+		$forum_action = $this->validRedirectActions[$action];
 
 		$forum_url =
 			$this->ForumSettings['boardurl']
 			. '/index.php?action=' . $forum_action
 			. ';return_hash=' . hash_hmac('sha1', $wiki_url, $this->ForumSettings['image_proxy_secret'])
-			. ';return_to=' . base64_encode($wiki_url);
+			. ';return_to=' . urlencode($wiki_url);
 
 		return (string) $forum_url;
 	}
