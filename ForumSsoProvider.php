@@ -562,6 +562,8 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 	private function updateWikiUserGroups()
 	{
 		$this->MWlogger->debug('Updating wiki groups...');
+		$this->MWlogger->debug('Current Forum Member Groups:' .implode(',', $this->ForumMemberGroups) . '...');
+		$this->MWlogger->debug('Current Wiki Effective Groups:' .implode(',', $this->wikiMember->getEffectiveGroups()) . '...');
 
 		// Wiki Group Name => Forum Group IDS
 		$groupActions = array(
@@ -585,21 +587,32 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
         $madeChange = false;
 		foreach ($groupActions as $wiki_group_name => $fs_group_ids)
 		{
+			// No group ids, skip.
+			if (empty($fs_group_ids) || $fs_group_ids == array())
+			{
+				$this->MWlogger->debug('Skipping ' . $wiki_group_name . ' due to no forum mappings...');
+				continue;
+			}
+
 			// They are in the Forum group but not the wiki group?
 			if (
 				array_intersect($fs_group_ids, $this->ForumMemberGroups) != array()
-				&& in_array($wiki_group_name, $this->wikiMember->getEffectiveGroups()) == array()
+				&& !in_array($wiki_group_name, $this->wikiMember->getEffectiveGroups())
 			)
 			{
+				$this->MWlogger->debug('Adding ' . $wiki_group_name . ' as member is apart of forum group which grants access (' . implode(',', $fs_group_ids) . ')...');
+
 				$this->wikiMember->addGroup($wiki_group_name);
 				$madeChange = true;
 			}
 			// They are not in the Forum group, but in the wiki group
 			elseif (
 				array_intersect($fs_group_ids, $this->ForumMemberGroups) == array()
-				&& in_array($wiki_group_name, $this->wikiMember->getEffectiveGroups()) != array()
+				&& in_array($wiki_group_name, $this->wikiMember->getEffectiveGroups())
 			)
 			{
+				$this->MWlogger->debug('Removing ' . $wiki_group_name . ' as member is no longer apart of forum group which grants access (' . implode(',', $fs_group_ids) . ')...');
+
 				$this->wikiMember->removeGroup($wiki_group_name);
 				$madeChange = true;
 			}

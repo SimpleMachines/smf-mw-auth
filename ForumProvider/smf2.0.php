@@ -233,7 +233,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 		);
 
 		if (!empty($member['additional_groups']))
-			$groups += explode(',', $member['additional_groups']);
+			$groups = array_merge($groups, array_map('intval', explode(',', $member['additional_groups'])));
 
 		return $groups;
 	}
@@ -372,7 +372,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 			FROM ' . $this->ForumSettings['db_prefix'] . 'ban_items AS bi
 			LEFT JOIN ' . $this->ForumSettings['db_prefix'] . 'ban_groups AS bg
 				ON (bi.id_ban_group = bg.id_ban_group)
-			WHERE ' . $this->db->quote($email_address) . ' LIKE bi.email_address
+			WHERE "' . $this->db->quote($email_address) . '" LIKE bi.email_address
 				AND (bg.cannot_post = 1 OR bg.cannot_login = 1)');
 
 		$banned = (int) $this->db->fetch_assoc($request);

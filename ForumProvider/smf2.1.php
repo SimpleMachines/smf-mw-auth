@@ -101,7 +101,10 @@ class ForumSoftwareProvidersmf21 extends ForumSoftwareProvidersmf20
 			// SMF 2.0 only supports IPv4.
 			foreach ($ips as $ip)
 			{
-				$banned = $this->__check_ip_ban($ip, []);
+				$ip_parts = array();
+				preg_match('/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/', $ip, $ip_parts);
+
+				$banned = $this->__check_ip_ban($ip, $ip_parts);
 
 				if ($banned)
 					continue;
@@ -117,9 +120,13 @@ class ForumSoftwareProvidersmf21 extends ForumSoftwareProvidersmf20
 	 * @param	string	$ip The forum members email address.
 	 * @return	bool	True if banned, false otherwise.
 	*/
-	protected function __check_ip_ban(string $ip, array $void)
+	protected function __check_ip_ban(string $ip, array $ip_parts)
 	{
-		$ip_bin = bin2hex(inet_pton($ip));
+		// If we have IP parts, we have IPv4 address.
+		if (!empty($ip_parts))
+			$ip_bin = bin2hex(inet_pton($ip));
+		else
+			$ip_bin = bin2hex($ip);
 
 		$sql = '
 			SELECT id_ban
@@ -130,10 +137,10 @@ class ForumSoftwareProvidersmf21 extends ForumSoftwareProvidersmf20
 		// Postgresql uses ::inet
 		if ($this->db->getDbType() === 'postgresql')
 			$sql .= '
-			WHERE (' . (string) $this->db->quote($ip_bin) . '::inet) BETWEEN bi.ip_low AND bi.ip_high)';
+			WHERE ("' . (string) $this->db->quote($ip_bin) . '"::inet) BETWEEN bi.ip_low AND bi.ip_high)';
 		else
 			$sql .= '
-			WHERE (unhex(' . (string) $this->db->quote($ip_bin) . ') BETWEEN bi.ip_low AND bi.ip_high)';
+			WHERE (unhex("' . (string) $this->db->quote($ip_bin) . '") BETWEEN bi.ip_low AND bi.ip_high)';
 
 		$sql .= '
 				AND (bg.cannot_post = 1 OR bg.cannot_login = 1)';
