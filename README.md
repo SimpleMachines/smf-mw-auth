@@ -9,7 +9,7 @@ To use, the contents of the ForumSsoProvider directory need to be placed into ex
 All settings should be defined prior to calling `wfLoadExtension('ForumSsoProvider');` in your LocalSettings.php
 ### Path to Forum Software
 
-    $wgSMFPath = '/path/to/smf/root/';
+    $wgFSPath = '/path/to/smf/root/';
 
 ### Forum software.  Supports smf2.0, smf2.1, elk1.0, elk1.1
 
