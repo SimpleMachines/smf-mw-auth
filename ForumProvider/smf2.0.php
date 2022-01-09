@@ -79,7 +79,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 *
 	 * @return	void	No return is expected.
 	*/
-	public function compatAuthSMF()
+	public function compatLegacy()
 	{
 		global $wgSMFPath, $wgSMFDenyGroupID, $wgSMFGroupID, $wgSMFAdminGroupID, $wgSMFSpecialGroups, $wgFSPNameStyle, $wgFSPEnableBanCheck;
 
