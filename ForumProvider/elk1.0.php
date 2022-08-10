@@ -6,7 +6,7 @@
  * @author		Simple Machines https://www.simplemachines.org
  * @author		SleePy (sleepy@simplemachines.org)
  * @author		Vekseid (vekseid@elliquiy.com)
- * @copyright	2020 Simple Machines
+ * @copyright	2022 Simple Machines
  * @license		BSD https://opensource.org/licenses/BSD-3-Clause
  *     (See LICENCE.md file)
  *
@@ -26,7 +26,7 @@ class ForumSoftwareProviderelk10 extends ForumSoftwareProvidersmf20
 	 *
 	 * @return	array	The ID and password.
 	*/
-	public function decodeCookie()
+	public function decodeCookie(): array
 	{
 		return json_decode($_COOKIE[$this->ForumSettings['cookiename']], true);
 	}
@@ -40,7 +40,7 @@ class ForumSoftwareProviderelk10 extends ForumSoftwareProvidersmf20
 	 * @param	bool	$do_return If we should return to the wiki or not.
 	 * @return	string	$forum_url The url to the forum we need to go do.
 	*/
-	public function getRedirectURL(string $action, string $wiki_url, bool $do_return = false)
+	public function getRedirectURL(string $action, string $wiki_url, bool $do_return = false): string
 	{
 		$forum_action = $this->validRedirectActions[$action];
 
@@ -59,7 +59,7 @@ class ForumSoftwareProviderelk10 extends ForumSoftwareProvidersmf20
 	 * @param	array	$cookie The cookie data.
 	 * @return	bool	True if the cookie is valid, false otherwise.
 	*/
-	public function cookiePasswordIsValid(array $user, array $cookie)
+	public function cookiePasswordIsValid(array $user, array $cookie): bool
 	{
 		return $cookie['password'] === hash('sha256', $user['passwd'] . $user['password_salt']);
 	}
@@ -72,7 +72,7 @@ class ForumSoftwareProviderelk10 extends ForumSoftwareProvidersmf20
 	 					depend on the data from getForumMember having existed due to caching.
 	 * @return	bool	True if banned, false otherwise.
 	*/
-	public function checkBans(array $member)
+	public function checkBans(array $member): bool
 	{
 		$banned = $this->__check_basic_ban((int) $member['id_member']);
 		return false;
@@ -87,7 +87,7 @@ class ForumSoftwareProviderelk10 extends ForumSoftwareProvidersmf20
 	 *					are deprecated, we still use them here as this legacy option should not be required in the future.
 	 * @return	bool	True if we had to convert the setting and update the user, false otherwise.
 	*/
-	public function legacyUpdateWikiUser(array $member, array $wikiUser)
+	public function legacyUpdateWikiUser(array $member, array $wikiUser): bool
 	{
 		return false;
 	}

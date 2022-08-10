@@ -1,6 +1,6 @@
 ForumSessionProvider License
 ============================
-Copyright (c) 2020, Simple Machines
+Copyright (c) 2020-2022, Simple Machines
 Copyright (c) 2019, SleePy
 Copyright (c) 2019, Vekseid
 

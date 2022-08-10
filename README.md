@@ -1,6 +1,14 @@
-This MediaWiki (1.35+) extension allows users in an [Elkarte Forum](https://www.elkarte.net/) or [SMF forum](https://www.simplemachines.org/) to be automatically signed in if they are of the appropriate usergroup while logged into the forum.
+This MediaWiki extension allows users in an [Elkarte Forum](https://www.elkarte.net/) or [SMF forum](https://www.simplemachines.org/) to be automatically signed in if they are of the appropriate usergroup while logged into the forum.
+
+---
+# Branches
+| Branch | MediaWiki | Elkarte | SMF     |
+| ------ | --------- | ------- | ------- |
+| master | 1.38+     | 1.0,1.1 | 2.0,2.1 |
+| mw135  | 1.35      | 1.0,1.1 | 2.0,2.1 |
 
  ----
+# Configuration
 To use, the contents of the ForumSsoProvider directory need to be placed into extensions/ForumSsoProvider. It is then loaded using the 'new' plugin loading method in LocalSettings.php:
 
     wfLoadExtension('ForumSsoProvider');

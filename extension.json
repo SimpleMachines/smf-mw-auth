@@ -1,6 +1,6 @@
 {
   "name": "ForumSsoProvider",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "author": [
   	"Simple Machines",
   	"SleePy",
@@ -11,7 +11,7 @@
   "license-name": "BSD",
   "type": "other",
   "requires": {
-    "MediaWiki": ">= 1.35.0"
+    "MediaWiki": ">= 1.38.0"
   },
   "config": {
     "_prefix": "wgFSP",

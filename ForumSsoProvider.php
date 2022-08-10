@@ -6,7 +6,7 @@
  * @author		Simple Machines https://www.simplemachines.org
  * @author		SleePy (sleepy@simplemachines.org)
  * @author		Vekseid (vekseid@elliquiy.com)
- * @copyright	2020 Simple Machines
+ * @copyright	2022 Simple Machines
  * @license		BSD https://opensource.org/licenses/BSD-3-Clause
  *     (See LICENCE.md file)
  *
@@ -30,23 +30,24 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 	protected $fs;
 
 	// Forum Software Variables.
-	protected $ForumCookie = [];
-	protected $ForumMember;
-	protected $ForumMemberNameCleaned;
-	protected $ForumMemberGroups = [];
-	protected $ForumSettings = [];
-	protected $ForumSoftware;
+	protected array $ForumCookie = [];
+	protected array $ForumMember;
+	protected string $ForumMemberNameCleaned;
+	protected array $ForumMemberGroups = [];
+	protected array $ForumSettings = [];
+	protected string $ForumSoftware;
 
 	// MediaWiki Objects.
 	protected $wikiUserInfo;
 	protected $wikiMember;
 	protected $wikiMemberOptions;
+	protected $wikiMemberGroups;
 	protected $wikiScriptPath = null;
 
 	// Our caching time for updating forum groups in seconds
-	private $update_groups_interval = 900;
-	private $forum_member_cache_interval = 900;
-	private $banned_check_interval = 300;
+	private int $update_groups_interval = 900;
+	private int $forum_member_cache_interval = 900;
+	private int $banned_check_interval = 300;
 
 	/**
 	 * Starts our session handler.  All the work starts here.
@@ -124,7 +125,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 	 * @hook	MediaWiki\SpecialPage\Hook\SpecialPageBeforeExecuteHook::onSpecialPageBeforeExecute
 	 * @return	void If this matches, we issue a redirect, otherwise we return nothing.
 	 */
-	public static function onSpecialPageBeforeExecute($special, $subPage)
+	public static function onSpecialPageBeforeExecute($special, $subPage): void
 	{
 		global $wgForumSessionProviderInstance;
 
@@ -149,7 +150,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 	 * @param	bool $do_return if we should return or not.
 	 * @return	void We will be doing a redirect and exiting execution here.
 	*/
-	public function doRedirect(string $action, bool $do_return = false)
+	public function doRedirect(string $action, bool $do_return = false): void
 	{
 		global $wgScriptPath;
 
@@ -228,7 +229,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 		$this->wikiMember = $this->wikiUserInfo->getUser();
 
 		// If they are not logged in or the username doesnt match.
-		if (!($this->wikiMember->isLoggedIn() && $this->wikiMember->getName() === $this->ForumMemberNameCleaned))
+		if (!($this->wikiMember->isRegistered() && $this->wikiMember->getName() === $this->ForumMemberNameCleaned))
 		{
 			$this->MWlogger->debug('Attempting to login a mediawiki user, if the user does not exist, this fails silently.');
 
@@ -320,7 +321,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 	 *
 	 * @return	void	No return is expected.
 	*/
-	private function loadFSSettings()
+	private function loadFSSettings(): void
 	{
 		global $wgFSPPath, $wgFSPDenyGroups, $wgFSPAllowGroups, $wgFSPAdminGroups, $wgFSPSuperGroups, $wgFSPInterfaceGroups, $wgFSPSpecialGroups, $wgFSPNameStyle, $wgFSPEnableBanCheck;
 
@@ -352,7 +353,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 	 *
 	 * @return	void	No return is expected.
 	*/
-	private function decodeCookie()
+	private function decodeCookie(): void
 	{
 		// Set the defaults.
 		$this->ForumCookie['id'] = 0;
@@ -385,7 +386,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 	 *
 	 * @return	void	No return is expected.
 	*/
-	private function setupDatabaseProvider()
+	private function setupDatabaseProvider(): void
 	{
 		if (
 			(!empty($this->ForumSettings['ForumDatabaseProvider']) && $this->ForumSettings['ForumDatabaseProvider'] == 'mysql')
@@ -407,7 +408,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 	 *
 	 * @return	array	All the data provided by the forum software for this specific member.
 	*/
-	private function getForumMember(WebRequest $request)
+	private function getForumMember(WebRequest $request): array
 	{
 		// Simple caching?
 		try
@@ -459,7 +460,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 	 * @param	string		$userName The original username from the forum.
 	 * @return	string|null	The cleaned name or if invalid null.
 	*/
-	private function cleanupUserName(string $userName)
+	private function cleanupUserName(string $userName): string
 	{
 		$this->MWlogger->debug('Cleanup name "{FSNAME}" using method {FSMMETHOD}', array(
 			'FSNAME' => $userName,
@@ -508,7 +509,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 	 *
 	 * @return	void	No return is expected.
 	*/
-	private function updateWikiUser()
+	private function updateWikiUser(): void
 	{
 		$this->MWlogger->debug('Updating wiki user.');
 
@@ -545,7 +546,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 		{
 			$this->MWlogger->debug('Saved wiki user changes.');
 
-			$this->wikiMember->setOption('forum_last_update_user', time());
+			$this->setUserOption('forum_last_update_user', time());
 			$this->wikiMember->saveSettings();
 		}
 		else
@@ -559,11 +560,11 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 	 *
 	 * @return	void	No return is expected.
 	*/
-	private function updateWikiUserGroups()
+	private function updateWikiUserGroups(): void
 	{
 		$this->MWlogger->debug('Updating wiki groups...');
 		$this->MWlogger->debug('Current Forum Member Groups:' .implode(',', $this->ForumMemberGroups) . '...');
-		$this->MWlogger->debug('Current Wiki Effective Groups:' .implode(',', $this->wikiMember->getEffectiveGroups()) . '...');
+		$this->MWlogger->debug('Current Wiki Effective Groups:' .implode(',', $this->getUserEffectiveGroups()) . '...');
 
 		// Wiki Group Name => Forum Group IDS
 		$groupActions = array(
@@ -597,7 +598,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 			// They are in the Forum group but not the wiki group?
 			if (
 				array_intersect($fs_group_ids, $this->ForumMemberGroups) != array()
-				&& !in_array($wiki_group_name, $this->wikiMember->getEffectiveGroups())
+				&& !in_array($wiki_group_name, $this->getUserEffectiveGroups())
 			)
 			{
 				$this->MWlogger->debug('Adding ' . $wiki_group_name . ' as member is apart of forum group which grants access (' . implode(',', $fs_group_ids) . ')...');
@@ -608,7 +609,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 			// They are not in the Forum group, but in the wiki group
 			elseif (
 				array_intersect($fs_group_ids, $this->ForumMemberGroups) == array()
-				&& in_array($wiki_group_name, $this->wikiMember->getEffectiveGroups())
+				&& in_array($wiki_group_name, $this->getUserEffectiveGroups())
 			)
 			{
 				$this->MWlogger->debug('Removing ' . $wiki_group_name . ' as member is no longer apart of forum group which grants access (' . implode(',', $fs_group_ids) . ')...');
@@ -623,7 +624,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 		{
 			$this->MWlogger->debug('Saved wiki group changes...');
 
-			$this->wikiMember->setOption('forum_last_update_groups', time());
+			$this->setUserOption('forum_last_update_groups', time());
 			$this->wikiMember->saveSettings();
 		}
 	}
@@ -635,7 +636,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 	 *
 	 * @return	void	No return is expected.
 	*/
-	private function createWikiUser()
+	private function createWikiUser(): void
 	{
 		$this->MWlogger->debug('User does not exist in wiki, creating user...');
 
@@ -648,9 +649,9 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 
 		// This is so we can validate which wiki members are attributed to which forum members.
 		// Could be used used in the future to prevent account takeovers due to account renames.
-		$this->wikiMember->setOption('forum_member_id', $this->fs->getMemberID($this->ForumMember));
+		$this->setUserOption('forum_member_id', $this->fs->getMemberID($this->ForumMember));
 
-		$this->wikiMember->setOption('forum_last_update', time());
+		$this->setUserOption('forum_last_update', time());
 		$this->wikiMember->saveSettings();
 	}
 
@@ -661,7 +662,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 	 *
 	 * @return	bool	True if they are banned, false if they are not.
 	*/
-	private function memberIsBannedOnForum()
+	private function memberIsBannedOnForum(): bool
 	{
 		// Disbled ban check?
 		if (empty($this->ForumSettings['EnableBanCheck']))
@@ -745,5 +746,35 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 			return $this->wikiMemberOptions->setOption($this->wikiMember, $option_name, (bool) $value);
 		else
 			return $this->wikiMemberOptions->setOption($this->wikiMember, $option_name, (int) $value);
+	}
+
+	/**
+	/**
+	 * Wraps up using the MediaWiki User Groups to fetch effective groups.
+	 * It is deprecated to use the methods under the MediaWiki User Instance.
+	 * This will create a object handler if needed.  This attempts to use proper methods based off the input type.
+	 *
+	 * @param	string	$option_name The name of the option we are attempting to load.
+	 * @param	mixed	$value The value we are setting
+	 * @param	string	$type The type the option is.  Either string|s, bool|b or int|i (default).
+	 * @return	mixed	If we don't have a member, we return null, otherwise we pass the return to the MediaWiki handler.
+	*/
+	private function getUserEffectiveGroups(bool $recache = false)
+	{
+		if (empty($this->wikiMember) || !is_object($this->wikiMember))
+		{
+			$this->MWlogger->debug('Attempted to call setUserOption prior to User Instance existing');
+
+			return null;
+		}
+
+		if (empty($this->wikiMemberGroups) || !is_object($this->wikiMemberGroups))
+			$this->wikiMemberGroups = \MediaWiki\MediaWikiServices::getInstance()->getUserGroupManager();
+
+		return $this->wikiMemberGroups->getUserEffectiveGroups(
+			$this->wikiMember,
+			0 /* protected $queryFlagsUsed = self::READ_NORMAL; public const READ_NORMAL = 0;*/,
+			$recache
+		);
 	}
 }

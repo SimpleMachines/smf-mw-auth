@@ -6,7 +6,7 @@
  * @author		Simple Machines https://www.simplemachines.org
  * @author		SleePy (sleepy@simplemachines.org)
  * @author		Vekseid (vekseid@elliquiy.com)
- * @copyright	2020 Simple Machines
+ * @copyright	2022 Simple Machines
  * @license		BSD https://opensource.org/licenses/BSD-3-Clause
  *     (See LICENCE.md file)
  *
@@ -26,7 +26,7 @@ class ForumSoftwareProvidersmf21 extends ForumSoftwareProvidersmf20
 	 *
 	 * @return	array	The ID and password.
 	*/
-	public function decodeCookie()
+	public function decodeCookie(): array
 	{
 		return (array) json_decode($_COOKIE[$this->ForumSettings['cookiename']], true);
 	}
@@ -35,7 +35,7 @@ class ForumSoftwareProvidersmf21 extends ForumSoftwareProvidersmf20
 	 * Figure out the URL that we need to send the user to in order to perform the requested action.
 	 * The forum software should process the action and then return to MediaWiki.
 	*/
-	public function getRedirectURL(string $action, string $wiki_url, bool $do_return = false)
+	public function getRedirectURL(string $action, string $wiki_url, bool $do_return = false): string
 	{
 		$forum_action = $this->validRedirectActions[$action];
 
@@ -56,7 +56,7 @@ class ForumSoftwareProvidersmf21 extends ForumSoftwareProvidersmf20
 	 * @param	array	$cookie The cookie data.
 	 * @return	bool	True if the cookie is valid, false otherwise.
 	*/
-	public function cookiePasswordIsValid(array $user, array $cookie)
+	public function cookiePasswordIsValid(array $user, array $cookie): bool
 	{
 		if (empty($user) || empty($cookie))
 			return false;
@@ -80,7 +80,7 @@ class ForumSoftwareProvidersmf21 extends ForumSoftwareProvidersmf20
 	 					depend on the data from getForumMember having existed due to caching.
 	 * @return	bool	True if banned, false otherwise.
 	*/
-	public function checkBans(array $member)
+	public function checkBans(array $member): bool
 	{
 		$banned = isset($profile['is_activated']) ? $profile['is_activated'] >= 10 : 0;
 
@@ -120,7 +120,7 @@ class ForumSoftwareProvidersmf21 extends ForumSoftwareProvidersmf20
 	 * @param	string	$ip The forum members email address.
 	 * @return	bool	True if banned, false otherwise.
 	*/
-	protected function __check_ip_ban(string $ip, array $ip_parts)
+	protected function __check_ip_ban(string $ip, array $ip_parts): bool
 	{
 		// If we have IP parts, we have IPv4 address.
 		if (!empty($ip_parts))

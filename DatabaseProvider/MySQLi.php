@@ -6,7 +6,7 @@
  * @author		Simple Machines https://www.simplemachines.org
  * @author		SleePy (sleepy@simplemachines.org)
  * @author		Vekseid (vekseid@elliquiy.com)
- * @copyright	2020 Simple Machines
+ * @copyright	2022 Simple Machines
  * @license		BSD https://opensource.org/licenses/BSD-3-Clause
  *     (See LICENCE.md file)
  *
@@ -30,7 +30,7 @@ class ForumDatabaseProviderMySQLi extends ForumDatabaseProvider
      * @param string $db_name Forum Software database name.
      * @return bool True if connected, false if not.
      */
-	public function connect(string $db_server, string $db_user, string $db_password, string $db_name)
+	public function connect(string $db_server, string $db_user, string $db_password, string $db_name): bool
 	{
 		try {
 			$driver = new mysqli_driver();
@@ -56,8 +56,8 @@ class ForumDatabaseProviderMySQLi extends ForumDatabaseProvider
 	/**
 	 * Wrapper for MySQLi Query
 	 *
-	 * @param	string		$query The query we will perform against the database.
-	 * @return	resource	Database resource
+	 * @param	string			$query The query we will perform against the database.
+	 * @return	resource|false	Database resource
 	 */
 	public function query(string $query)
 	{
@@ -138,7 +138,7 @@ class ForumDatabaseProviderMySQLi extends ForumDatabaseProvider
 	 * @param	resource	$request Database resource
 	 * @return	bool		False if request contained nothing, otehrwise we assume it worked.
 	 */
-	public function free(&$request)
+	public function free(&$request): bool
 	{
 		if (empty($request))
 			return false;
@@ -158,7 +158,7 @@ class ForumDatabaseProviderMySQLi extends ForumDatabaseProvider
 	 * @param	string	$string The string we are escaping
 	 * @return	string	The string escaped and ready for usage in the database.
 	 */
-	public function quote($string)
+	public function quote(string $string): string
 	{
 		if (empty($string))
 			return false;

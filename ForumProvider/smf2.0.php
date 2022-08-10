@@ -6,7 +6,7 @@
  * @author		Simple Machines https://www.simplemachines.org
  * @author		SleePy (sleepy@simplemachines.org)
  * @author		Vekseid (vekseid@elliquiy.com)
- * @copyright	2020 Simple Machines
+ * @copyright	2022 Simple Machines
  * @license		BSD https://opensource.org/licenses/BSD-3-Clause
  *     (See LICENCE.md file)
  *
@@ -24,7 +24,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	/*
 	 * Settings File variables we need to include
 	*/
-	protected $settingsFileVariables = array(
+	protected $settingsFileVariables = [
 		'cookiename',
 		'boardurl',
 		'db_prefix',
@@ -37,13 +37,13 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 		'cookie_no_auth_secret',
 		'image_proxy_secret',
 		'sourcedir'
-	);
+	];
 
-	protected $validRedirectActions = array(
+	protected $validRedirectActions = [
 		'createaccount' => 'register',
 		'userlogin' => 'login',
 		'userlogout' => 'logout'
-	);
+	];
 
 	/**
 	 * Validate that the configuration file exists and is readable.
@@ -51,7 +51,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 * @param	string		$basepath The base path to the forum configuraiton file.  The forum handler will load the appropriate configuraiton file.
 	 * @return	bool		True if its valid, false otherwise.
 	*/
-	public function configurationFileIsValid(string $basepath)
+	public function configurationFileIsValid(string $basepath): bool
 	{
 		return !empty($basepath) && is_readable($basepath . '/Settings.php');
 	}
@@ -79,7 +79,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 *
 	 * @return	void	No return is expected.
 	*/
-	public function compatLegacy()
+	public function compatLegacy(): void
 	{
 		global $wgSMFPath, $wgSMFDenyGroupID, $wgSMFGroupID, $wgSMFAdminGroupID, $wgSMFSpecialGroups, $wgFSPNameStyle, $wgFSPEnableBanCheck;
 
@@ -112,7 +112,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 *
 	 * @return	bool	True if the forum software cookie exists, false otherwise.
 	*/
-	public function cookieExists()
+	public function cookieExists(): bool
 	{
 		return !empty($_COOKIE[$this->ForumSettings['cookiename']]);
 	}
@@ -122,7 +122,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 *
 	 * @return	array	The ID and password.
 	*/
-	public function decodeCookie()
+	public function decodeCookie(): array
 	{
 		return (array) unserialize($_COOKIE[$this->ForumSettings['cookiename']]);
 	}
@@ -136,7 +136,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 * @param	bool	$do_return If we should return to the wiki or not.
 	 * @return	string	$forum_url The url to the forum we need to go do.
 	*/
-	public function getRedirectURL(string $action, string $wiki_url, bool $do_return = false)
+	public function getRedirectURL(string $action, string $wiki_url, bool $do_return = false): string
 	{
 		$forum_action = $this->validRedirectActions[$action];
 
@@ -157,7 +157,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 * @param	array	$cookie The cookie data.
 	 * @return	bool	True if the cookie is valid, false otherwise.
 	*/
-	public function cookiePasswordIsValid(array $user, array $cookie)
+	public function cookiePasswordIsValid(array $user, array $cookie): bool
 	{
 		// 2.0.16 added a hash secret for cookies, preventing forgeries of the cookie, use it if enabled.
 		if (!empty($this->ForumSettings['auth_secret']) && empty($this->ForumSettings['cookie_no_auth_secret']))
@@ -174,7 +174,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 * @param	int		$id_member The id of the member to load from the database. This is determiend by the cookie.
 	 * @return	array	All data from the forum database.
 	*/
-	public function getForumMember(int $id_member)
+	public function getForumMember(int $id_member): array
 	{
 		$result = $this->db->query('
 			SELECT
@@ -201,7 +201,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 					depend on the data from getForumMember having existed due to caching.
 	 * @return	int		The ID of the member from the forum software.
 	*/
-	public function getMemberID(array $member)
+	public function getMemberID(array $member): int
 	{
 		return (int) $member['id_member'];
 	}
@@ -213,7 +213,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 					depend on the data from getForumMember having existed due to caching.
 	 * @return	string	The member display name.
 	*/
-	public function getMemberName(array $member)
+	public function getMemberName(array $member): string
 	{
 		return (string) $member['member_name'];
 	}
@@ -225,7 +225,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 					depend on the data from getForumMember having existed due to caching.
 	 * @return	array	An array of intergers of the forum group ids this member is apart of.
 	*/
-	public function getMemberGroups(array $member)
+	public function getMemberGroups(array $member): array
 	{
 		$groups = array(
 			(int) $member['id_group'],
@@ -245,7 +245,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 					depend on the data from getForumMember having existed due to caching.
 	 * @return	string	The member email address.
 	*/
-	public function getMemberEmailAddress(array $member)
+	public function getMemberEmailAddress(array $member): string
 	{
 		return (string) $member['email_address'];
 	}
@@ -258,7 +258,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 					depend on the data from getForumMember having existed due to caching.
 	 * @return	string	The member login name.
 	*/
-	public function getMemberRealName(array $member)
+	public function getMemberRealName(array $member): string
 	{
 		return (string) $member['real_name'];
 	}
@@ -273,7 +273,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 *					are deprecated, we still use them here as this legacy option should not be required in the future.
 	 * @return	bool	True if we had to convert the setting and update the user, false otherwise.
 	*/
-	public function legacyUpdateWikiUser(array $member, object $wikiUser)
+	public function legacyUpdateWikiUser(array $member, object $wikiUser): bool
 	{
 		// Convert the smf_member_id over?
 		if ($this->ForumSettings['NameStyle'] == 'smf' && $wikiUser->getOption('forum_member_id', 0) == 0 && $wikiUser->getOption('smf_member_id', 0) != 0)
@@ -304,7 +304,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 					depend on the data from getForumMember having existed due to caching.
 	 * @return	bool	True if banned, false otherwise.
 	*/
-	public function checkBans(array $member)
+	public function checkBans(array $member): bool
 	{
 		$banned = isset($profile['is_activated']) ? $profile['is_activated'] >= 10 : 0;
 
@@ -342,7 +342,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 * @param	int		$id_member The id of the member provided by the forum software.
 	 * @return	bool	True if banned, false otherwise.
 	*/
-	protected function __check_basic_ban(int $id_member)
+	protected function __check_basic_ban(int $id_member): bool
 	{
 		$request = $this->db->query('
 			SELECT id_ban
@@ -365,7 +365,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 * @param	string	$email_address The forum members email address.
 	 * @return	bool	True if banned, false otherwise.
 	*/
-	protected function __check_email_ban(string $email_address)
+	protected function __check_email_ban(string $email_address): bool
 	{
 		$request = $this->db->query('
 			SELECT id_ban
@@ -388,7 +388,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	 * @param	array	$ip_parts The IP exploded.
 	 * @return	bool	True if banned, false otherwise.
 	*/
-	protected function __check_ip_ban(string $ip, array $ip_parts)
+	protected function __check_ip_ban(string $ip, array $ip_parts): bool
 	{
 		$request = $this->db->query('
 			SELECT id_ban
