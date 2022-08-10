@@ -21,10 +21,10 @@
 */
 class ForumDatabaseProvider
 {
-	protected object	$MWlogger;
-	protected bool		$loaded = false;
-	protected object	$db;
-	protected string	$db_type = 'mysql';
+	protected /*object*/	$MWlogger;
+	protected /*bool*/		$loaded = false;
+	protected /*object*/	$db;
+	protected /*string*/	$db_type = 'mysql';
 
 	/**
 	 * Starts our database handler.

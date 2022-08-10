@@ -30,12 +30,12 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 	protected $fs;
 
 	// Forum Software Variables.
-	protected array $ForumCookie = [];
-	protected array $ForumMember;
-	protected string $ForumMemberNameCleaned;
-	protected array $ForumMemberGroups = [];
-	protected array $ForumSettings = [];
-	protected string $ForumSoftware;
+	protected /*array*/ $ForumCookie = [];
+	protected /*array*/ $ForumMember;
+	protected /*string*/ $ForumMemberNameCleaned;
+	protected /*array*/ $ForumMemberGroups = [];
+	protected /*array*/ $ForumSettings = [];
+	protected /*string*/ $ForumSoftware;
 
 	// MediaWiki Objects.
 	protected $wikiUserInfo;
@@ -45,9 +45,9 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 	protected $wikiScriptPath = null;
 
 	// Our caching time for updating forum groups in seconds
-	private int $update_groups_interval = 900;
-	private int $forum_member_cache_interval = 900;
-	private int $banned_check_interval = 300;
+	private /*int*/ $update_groups_interval = 900;
+	private /*int*/ $forum_member_cache_interval = 900;
+	private /*int*/ $banned_check_interval = 300;
 
 	/**
 	 * Starts our session handler.  All the work starts here.

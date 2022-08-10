@@ -21,9 +21,9 @@
 */
 class ForumSoftwareProvider
 {
-	protected object	$MWlogger;
-	protected object	$db;
-	protected array		$ForumSettings;
+	protected /*object*/	$MWlogger;
+	protected /*object*/	$db;
+	protected /*array*/		$ForumSettings;
 
 	/**
 	 * Starts our forum provider handler.
