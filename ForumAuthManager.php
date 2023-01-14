@@ -31,8 +31,9 @@ class ForumAuthManager extends \MediaWiki\Auth\TemporaryPasswordPrimaryAuthentic
 	 */
 	public function __construct( /*array*/ $params = [] ) {
 		$loadBalancer = \MediaWiki\MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$userOptionsLookup = \MediaWiki\MediaWikiServices::getInstance()->getUserOptionsLookup();
 
-		parent::__construct( $loadBalancer, $params );
+		parent::__construct( $loadBalancer, $userOptionsLookup, $params );
 	}
 
 	/**
