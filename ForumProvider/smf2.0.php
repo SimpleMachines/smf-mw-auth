@@ -45,6 +45,8 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 		'userlogout' => 'logout'
 	];
 
+	protected $wikiMemberOptions = null;
+
 	/**
 	 * Validate that the configuration file exists and is readable.
 	 *
@@ -276,15 +278,20 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	public function legacyUpdateWikiUser(array $member, object $wikiUser): bool
 	{
 		// Convert the smf_member_id over?
-		if ($this->ForumSettings['NameStyle'] == 'smf' && $wikiUser->getOption('forum_member_id', 0) == 0 && $wikiUser->getOption('smf_member_id', 0) != 0)
+		if ($this->ForumSettings['NameStyle'] !== 'smf')
+			return false;
+
+		if (empty($this->wikiMemberOptions) || !is_object($this->wikiMemberOptions))
+			$this->wikiMemberOptions = \MediaWiki\MediaWikiServices::getInstance()->getUserOptionsManager();
+
+		if ($this->wikiMemberOptions->getIntOption($wikiUser, 'forum_member_id', 0) == 0 && $this->wikiMemberOptions->getIntOption($wikiUser, 'smf_member_id', 0) != 0)
 		{
 			$this->MWlogger->debug('SMF Auth conversion to FS Provider. "{OLD}" vs "{NEW}"', array(
-				'OLD' => $wikiUser->getOption('forum_member_id', 0),
-				'NEW' => $wikiUser->getOption('smf_member_id', 0),
+				'OLD' => $this->wikiMemberOptions->getIntOption($wikiUser, 'forum_member_id', 0),
+				'NEW' => $this->wikiMemberOptions->getIntOption($wikiUser, 'smf_member_id', 0),
 			));
-
-			$wikiUser->setOption('forum_member_id', $member['id_member']);
-			$wikiUser->setOption('smf_member_id', 0);
+			$this->wikiMemberOptions->setOption($wikiUser, 'forum_member_id', (int) $member['id_member']);
+			$this->wikiMemberOptions->setOption($wikiUser, 'smf_member_id', 0);
 			return true;
 		}
 
