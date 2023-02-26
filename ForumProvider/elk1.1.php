@@ -6,7 +6,7 @@
  * @author		Simple Machines https://www.simplemachines.org
  * @author		SleePy (sleepy@simplemachines.org)
  * @author		Vekseid (vekseid@elliquiy.com)
- * @copyright	2020 Simple Machines
+ * @copyright	2022 Simple Machines
  * @license		BSD https://opensource.org/licenses/BSD-3-Clause
  *     (See LICENCE.md file)
  *

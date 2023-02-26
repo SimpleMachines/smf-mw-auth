@@ -6,7 +6,7 @@
  * @author		Simple Machines https://www.simplemachines.org
  * @author		SleePy (sleepy@simplemachines.org)
  * @author		Vekseid (vekseid@elliquiy.com)
- * @copyright	2020 Simple Machines
+ * @copyright	2022 Simple Machines
  * @license		BSD https://opensource.org/licenses/BSD-3-Clause
  *     (See LICENCE.md file)
  *
@@ -21,10 +21,10 @@
 */
 class ForumDatabaseProvider
 {
-	protected $MWlogger;
-	protected $loaded = false;
-	protected $db;
-	protected $db_type = 'mysql';
+	protected /*object*/	$MWlogger;
+	protected /*bool*/		$loaded = false;
+	protected /*object*/	$db;
+	protected /*string*/	$db_type = 'mysql';
 
 	/**
 	 * Starts our database handler.
@@ -45,7 +45,7 @@ class ForumDatabaseProvider
 	 *
 	 * @return	bool	True if connected, otherwise false.
 	*/
-	public function isLoaded()
+	public function isLoaded(): bool
 	{
 		return $this->loaded;
 	}
@@ -55,7 +55,7 @@ class ForumDatabaseProvider
 	 *
 	 * @return	string	The database type.
 	*/
-	public function getDbType()
+	public function getDbType(): string
 	{
 		return $this->db_type;
 	}
@@ -66,7 +66,7 @@ class ForumDatabaseProvider
      * @param	Exception|string 	$error The error from the database, typically a exception object.
  	 * @return	void				No return is generated.
     */
-	protected function DatabaseError($error)
+	protected function DatabaseError(object $error): void
     {
 		if (is_object($error))
 			$this->MWlogger->debug(

@@ -5,21 +5,20 @@
  *
  * @package SMF
  * @author Simple Machines https://www.simplemachines.org
- * @copyright 2020 Simple Machines and individual contributors
+ * @copyright 2022 Simple Machines and individual contributors
  * @license https://www.simplemachines.org/about/smf/license.php BSD
  *
- * @version 2.1 RC3
+ * @version 2.1
  */
 
 // Stuff we will ignore.
-$ignoreFiles = array(
-);
+$ignoreFiles = [];
 
 /* This is mostly meant for local usage.
    To add additional PHP Binaries, create a check-php-syntax-binaries.txt
    Add in this in each line the binary file, i.e: /usr/bin/php
 */
-$addditionalPHPBinaries = array();
+$addditionalPHPBinaries = [];
 if (file_exists(dirname(__FILE__) . '/check-php-syntax-binaries.txt'))
 	$addditionalPHPBinaries = file(dirname(__FILE__) . '/check-php-syntax-binaries.txt');
 
