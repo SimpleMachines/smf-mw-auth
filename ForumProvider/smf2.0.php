@@ -69,7 +69,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 		foreach ($this->settingsFileVariables as $key)
 			global $$key;
 
-		require ($basepath . '/Settings.php');
+		include ($basepath . '/Settings.php');
 
 		// Put these away for later.
 		foreach ($this->settingsFileVariables as $key)
