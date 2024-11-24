@@ -30,7 +30,7 @@ class ForumAuthManager extends \MediaWiki\Auth\TemporaryPasswordPrimaryAuthentic
 	 *    be sent to the same user again
 	 */
 	public function __construct( /*array*/ $params = [] ) {
-		$loadBalancer = \MediaWiki\MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$loadBalancer = \MediaWiki\MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
 		$userOptionsLookup = \MediaWiki\MediaWikiServices::getInstance()->getUserOptionsLookup();
 
 		parent::__construct( $loadBalancer, $userOptionsLookup, $params );
