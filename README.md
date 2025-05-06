@@ -4,7 +4,8 @@ This MediaWiki extension allows users in an [Elkarte Forum](https://www.elkarte.
 # Branches
 | Branch | MediaWiki | Elkarte | SMF     |
 | ------ | --------- | ------- | ------- |
-| master | 1.38+     | 1.0,1.1 | 2.0,2.1 |
+| master | 1.43+     | 1.0,1.1 | 2.0,2.1 |
+| mw139  | 1.39      | 1.0,1.1 | 2.0,2.1 |
 | mw135  | 1.35      | 1.0,1.1 | 2.0,2.1 |
 
  ----
