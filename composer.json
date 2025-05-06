@@ -1,5 +1,5 @@
 {
-	"name": "simplemachines/forumssoprovider",
+	"name": "SimpleMachines/ForumSsoProvider",
 	"type": "mediawiki-extension",
 	"description": "An extension to MediaWiki that allows an Elkarte Forum or SMF forum to be automatically signed in if they are of the appropriate usergroup while logged into the forum.",
 	"keywords": [
