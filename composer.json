@@ -1,0 +1,28 @@
+{
+	"name": "SimpleMachines/ForumSsoProvider",
+	"type": "mediawiki-extension",
+	"description": "An extension to MediaWiki that allows an Elkarte Forum or SMF forum to be automatically signed in if they are of the appropriate usergroup while logged into the forum.",
+	"keywords": [
+		"SMF Mediawiki Auth",
+		"Elkare Mediawiki Auth"
+	],
+	"homepage": "https://github.com/SimpleMachines/smf-mw-auth/",
+	"license": "BSD 3-Clause",
+	"authors": [
+		{
+			"name": "Vekseid",
+			"role": "Original author"
+    },
+		{
+			"name": "Simple Machines",
+			"role": "Developer"
+    },
+		{
+			"name": "jdarwood007",
+			"role": "Core Developer"
+		}
+	],
+	"require": {
+		"php": ">=8.1"
+	}
+}
