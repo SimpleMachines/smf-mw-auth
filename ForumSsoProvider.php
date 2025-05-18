@@ -233,7 +233,7 @@ class ForumSsoProvider extends \MediaWiki\Session\ImmutableSessionProviderWithCo
 		{
 			$this->MWlogger->debug('Attempting to login a mediawiki user, if the user does not exist, this fails silently.');
 
-			$this->wikiMember->setId($this->wikiMember->idFromName($this->ForumMemberNameCleaned));
+			$this->wikiMember->setId(\MediaWiki\MediaWikiServices::getInstance()->getUserIdentityLookup()->getUserIdentityByName($this->ForumMemberNameCleaned));
 
 			// The user doesn't exist yet in the wiki? Create them.
 			if ($this->wikiMember->getID() === 0)
