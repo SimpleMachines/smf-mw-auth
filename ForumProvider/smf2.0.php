@@ -313,7 +313,7 @@ class ForumSoftwareProvidersmf20 extends ForumSoftwareProvider
 	*/
 	public function checkBans(array $member): bool
 	{
-		$banned = isset($profile['is_activated']) ? $profile['is_activated'] >= 10 : 0;
+		$banned = isset($member['is_activated']) ? $member['is_activated'] >= 10 : 0;
 
 		if (empty($banned))
 			$banned = $this->__check_basic_ban((int) $member['id_member']);
