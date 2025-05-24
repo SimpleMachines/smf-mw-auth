@@ -21,6 +21,12 @@
 */
 class ForumSoftwareProvidersmf21 extends ForumSoftwareProvidersmf20
 {
+	protected $validRedirectActions = [
+		'createaccount' => 'signup',
+		'userlogin' => 'login',
+		'userlogout' => 'logout'
+	];
+	
 	/**
 	 * Decodes the forum software cookie returning the id and password.
 	 *
@@ -82,7 +88,7 @@ class ForumSoftwareProvidersmf21 extends ForumSoftwareProvidersmf20
 	*/
 	public function checkBans(array $member): bool
 	{
-		$banned = isset($profile['is_activated']) ? $profile['is_activated'] >= 10 : 0;
+		$banned = isset($member['is_activated']) ? $member['is_activated'] >= 10 : 0;
 
 		if (empty($banned))
 			$banned = $this->__check_basic_ban((int) $member['id_member']);
